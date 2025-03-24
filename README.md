@@ -3,7 +3,7 @@
 ### Installation and launching
 
 ```bash
-git clone [repo-url] && cd [project-dir]
+git clone https://github.com/Kreetrix/web-project-backend.git && cd web-project-backend
 npm i
 cp .env.example .env
 npm run dev
