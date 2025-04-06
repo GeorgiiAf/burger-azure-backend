@@ -5,6 +5,12 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+
+/**
+ * 
+ * @param {*} app 
+ * Basically it makes it so that routes are named after folders 
+ */
 export default async function setupRoutes(app) {
   const routeFolders = fs.readdirSync(__dirname, { withFileTypes: true })
     .filter(dirent => dirent.isDirectory())
