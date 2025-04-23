@@ -12,10 +12,17 @@
  */
 
 /**
+ * @typedef {Object} newUser
+ * @property {string} email
+ * @property {string} username
+ */
+
+/**
  * @typedef {Object} User
  * @property {number} id
+ * @property {number} role
  * @property {string} email
- * @property {string} [name]
+ * @property {string} username
  */
 
 export {};

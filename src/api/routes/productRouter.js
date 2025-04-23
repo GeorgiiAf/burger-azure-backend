@@ -5,13 +5,13 @@ import {
   ProductByType,
 } from '../controllers/product-controller.js';
 
-const router = express.Router();
+const productRouter = express.Router();
 
-router.get('/products', getAllProducts);
+productRouter.get('/products', getAllProducts);
 
-router.route('/').get(getAllProducts);
+productRouter.route('/').get(getAllProducts);
 
-router.route('/:id').get(getProduct);
-router.route('/type/:type').get(ProductByType);
+productRouter.route('/:id').get(getProduct);
+productRouter.route('/type/:type').get(ProductByType);
 
-export default router;
+export default productRouter;
