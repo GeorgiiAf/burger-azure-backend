@@ -4,6 +4,11 @@ import setupRoutes from './routes/index.js';
 
 const app = express();
 
+app.use((req, res, next) => {
+  console.log(`Incoming request: ${req.method} ${req.url}`); // Debugging log
+  next();
+});
+
 app.use(json());
 app.use(urlencoded({extended: true}));
 

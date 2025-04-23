@@ -2,6 +2,8 @@ import {
   getProductById,
   listAllProducts,
   getProductByType,
+  insertProduct,
+  removeProductById,
 } from '../models/product-model.js';
 
 const getAllProducts = async (req, res) => {
@@ -42,4 +44,38 @@ const ProductByType = async (req, res) => {
   }
 };
 
-export {getAllProducts, getProduct, ProductByType};
+const addProduct = async (req, res) => {
+  try {
+    console.log('addProduct called with body:', req.body); // Debugging log
+    const {name, price, description, category} = req.body;
+    if (!name || !price || !description || !category) {
+      console.log('Validation failed: Missing fields'); // Debugging log
+      return res.status(400).json({message: 'All fields are required'});
+    }
+    const result = await insertProduct({name, price, description, category});
+    console.log('Product added successfully with ID:', result.insertId); // Debugging log
+    res.status(201).json({
+      message: 'Product added successfully',
+      productId: result.insertId,
+    });
+  } catch (error) {
+    console.error('Error adding product:', error);
+    res.status(500).json({message: 'Internal server error'});
+  }
+};
+
+const deleteProduct = async (req, res) => {
+  try {
+    const {id} = req.params;
+    const result = await removeProductById(id);
+    if (result.affectedRows === 0) {
+      return res.status(404).json({message: 'Product not found'});
+    }
+    res.json({message: 'Product deleted successfully'});
+  } catch (error) {
+    console.error('Error deleting product:', error);
+    res.status(500).json({message: 'Internal server error'});
+  }
+};
+
+export {getAllProducts, addProduct, deleteProduct, getProduct, ProductByType};

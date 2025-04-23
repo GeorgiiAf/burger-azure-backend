@@ -3,15 +3,23 @@ import {
   getAllProducts,
   getProduct,
   ProductByType,
+  addProduct,
+  deleteProduct,
 } from '../controllers/product-controller.js';
 
 const router = express.Router();
 
-router.get('/products', getAllProducts);
+// Route for getting all products and adding a new product
+router.route('/')
+  .get(getAllProducts)
+  .post(addProduct);
 
-router.route('/').get(getAllProducts);
+// Route for getting products by type
+router.get('/type/:type', ProductByType);
 
-router.route('/:id').get(getProduct);
-router.route('/type/:type').get(ProductByType);
+// Route for getting a single product and deleting a product
+router.route('/:id')
+  .get(getProduct)
+  .delete(deleteProduct);
 
 export default router;
