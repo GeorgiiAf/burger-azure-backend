@@ -18,7 +18,7 @@ router.route('/')
 // Route for getting products by type
 router.get('/type/:type', ProductByType);
 
-// Route for getting a single product and deleting a product
+// Route for getting a single product, deleting a product and updating a product
 router.route('/:id')
   .get(getProduct)
   .put(updateProduct)
