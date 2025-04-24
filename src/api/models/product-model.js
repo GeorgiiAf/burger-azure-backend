@@ -3,8 +3,26 @@
 import promisePool from '../../utils/database.js';
 
 const listAllProducts = async () => {
-  const [rows] = await promisePool.execute('SELECT * FROM Product');
-  return rows;
+  const [products] = await promisePool.execute('SELECT * FROM Product');
+
+  for (const product of products) {
+    if (!product.ID) {
+      product.allergies = []; // Assign an empty array for allergies
+      continue;
+    }
+
+    try {
+      const allergies = await getAllergiesByProductId(product.ID);
+      product.allergies = allergies;
+    } catch (error) {
+      console.error(
+        `Error fetching allergies for product ID ${product.ID}:`,
+        error
+      );
+    }
+  }
+
+  return products;
 };
 
 const insertProduct = async ({name, price, description, category}) => {
@@ -32,7 +50,7 @@ const getProductById = async (id) => {
   if (product.length === 0) return null;
 
   const allergies = await getAllergiesByProductId(id);
-  return { ...product[0], allergies };
+  return {...product[0], allergies};
 };
 
 const getProductByType = async (type) => {
@@ -59,7 +77,6 @@ const updateProductById = async (id, updateData) => {
   const [result] = await promisePool.execute(query, values);
   return result;
 };
-
 
 //Allergies:
 
@@ -144,14 +161,24 @@ const removeAllergyFromProduct = async (productId, allergyId) => {
 
 // Get all allergies for a product
 const getAllergiesByProductId = async (productId) => {
-  const [rows] = await promisePool.execute(
-    `SELECT a.id, a.name
-     FROM Allergy a
-     JOIN ProductAllergy pa ON a.id = pa.allergy_id
-     WHERE pa.product_id = ?`,
-    [productId]
-  );
-  return rows;
+  if (!productId) {
+    console.error('getAllergiesByProductId called with undefined productId'); // Debugging log
+    return [];
+  }
+
+  try {
+    const [rows] = await promisePool.execute(
+      `SELECT a.id, a.name
+       FROM Allergy a
+       JOIN ProductAllergy pa ON a.id = pa.allergy_id
+       WHERE pa.product_id = ?`,
+      [productId]
+    );
+    return rows;
+  } catch (error) {
+    console.error('Error executing getAllergiesByProductId query:', error);
+    throw error;
+  }
 };
 
 export {
