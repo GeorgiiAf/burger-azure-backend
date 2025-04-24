@@ -20,6 +20,6 @@ export async function register(req, res) {
 
     res.json(authResponse);
   } catch (e) {
-    res.status(400).json({message: 'Registration failed', Error: e});
+    res.status(400).json({message: 'Registration failed', Error: e.message});
   }
 }

@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken';
 import Joi from 'joi';
-import {config} from '../config/jwt.js';
+import {config} from '../../config/jwt.js';
 
 export const authenticateToken = (req, res, next) => {
   const authHeader = req.headers['authorization'];
@@ -16,6 +16,7 @@ export const authenticateToken = (req, res, next) => {
 };
 
 export const validateRegister = (req, res, next) => {
+  console.log(req.body);
   const schema = Joi.object({
     email: Joi.string().email().required(),
     password: Joi.string().min(8).required(),
@@ -24,5 +25,6 @@ export const validateRegister = (req, res, next) => {
 
   const {error} = schema.validate(req.body);
   if (error) return res.status(400).json({error: error.message});
+  console.log('Validated');
   next();
 };

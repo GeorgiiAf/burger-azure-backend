@@ -15,6 +15,7 @@
  * @typedef {Object} newUser
  * @property {string} email
  * @property {string} username
+ * @property {string} password
  */
 
 /**
@@ -23,6 +24,7 @@
  * @property {number} role
  * @property {string} email
  * @property {string} username
+ * @property {string} password
  */
 
 export {};
