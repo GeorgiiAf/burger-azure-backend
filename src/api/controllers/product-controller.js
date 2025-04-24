@@ -1,5 +1,3 @@
-// /controllers/product-controller.js
-
 import {
   getProductById,
   listAllProducts,

@@ -1,5 +1,3 @@
-// /models/product-model.js
-
 import promisePool from '../../utils/database.js';
 
 const listAllProducts = async () => {
