@@ -6,9 +6,23 @@ import {
   addProduct,
   deleteProduct,
   updateProduct,
+  addProductAllergy,
+  removeProductAllergy,
+  getProductAllergies,
+  addAllergy,
+  listAllergies,
 } from '../controllers/product-controller.js';
 
 const router = express.Router();
+
+router.route('/allergies')
+  .post(addAllergy)
+  .get(listAllergies);
+
+router.route('/:id/allergies')
+  .get(getProductAllergies)
+  .post(addProductAllergy)
+  .delete(removeProductAllergy);
 
 // Route for getting all products and adding a new product
 router.route('/')
