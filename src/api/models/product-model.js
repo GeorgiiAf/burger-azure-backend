@@ -37,10 +37,28 @@ const getProductByType = async (type) => {
   return rows;
 };
 
+const updateProductById = async (id, updateData) => {
+  const fields = [];
+  const values = [];
+
+  // Build dynamic query based on provided fields
+  for (const [key, value] of Object.entries(updateData)) {
+    fields.push(`${key} = ?`);
+    values.push(value);
+  }
+
+  values.push(id); // Add ID for WHERE clause
+
+  const query = `UPDATE Product SET ${fields.join(', ')} WHERE id = ?`;
+  const [result] = await promisePool.execute(query, values);
+  return result;
+};
+
 export {
   listAllProducts,
   insertProduct,
   removeProductById,
   getProductById,
   getProductByType,
+  updateProductById,
 };

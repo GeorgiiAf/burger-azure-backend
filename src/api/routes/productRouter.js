@@ -5,6 +5,7 @@ import {
   ProductByType,
   addProduct,
   deleteProduct,
+  updateProduct,
 } from '../controllers/product-controller.js';
 
 const router = express.Router();
@@ -20,6 +21,7 @@ router.get('/type/:type', ProductByType);
 // Route for getting a single product and deleting a product
 router.route('/:id')
   .get(getProduct)
+  .put(updateProduct)
   .delete(deleteProduct);
 
 export default router;

@@ -4,6 +4,7 @@ import {
   getProductByType,
   insertProduct,
   removeProductById,
+  updateProductById,
 } from '../models/product-model.js';
 
 const getAllProducts = async (req, res) => {
@@ -78,4 +79,32 @@ const deleteProduct = async (req, res) => {
   }
 };
 
-export {getAllProducts, addProduct, deleteProduct, getProduct, ProductByType};
+const updateProduct = async (req, res) => {
+  try {
+    console.log('updateProduct called with body:', req.body);
+    const { id } = req.params;
+
+    // Remove any undefined or null values from the body
+    const updateData = Object.fromEntries(
+      Object.entries(req.body).filter(([_, v]) => v != null)
+    );
+
+    // Check if there's anything to update
+    if (Object.keys(updateData).length === 0) {
+      return res.status(400).json({ message: 'No valid fields provided for update' });
+    }
+
+    const result = await updateProductById(id, updateData);
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ message: 'Product not found' });
+    }
+
+    console.log('Product updated successfully with ID:', id);
+    res.json({ message: 'Product updated successfully' });
+  } catch (error) {
+    console.error('Error updating product:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+};
+
+export {getAllProducts, addProduct, deleteProduct, getProduct, ProductByType, updateProduct};
