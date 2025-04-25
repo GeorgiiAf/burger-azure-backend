@@ -12,7 +12,7 @@ import promisePool from '../../utils/database.js';
  */
 const findByEmail = async (email) => {
   const [user] = await promisePool.execute(
-    'SELECT * FROM users WHERE email = ?',
+    'SELECT * FROM User WHERE email = ?',
     [email]
   );
   console.log(user);
@@ -26,7 +26,7 @@ const findByEmail = async (email) => {
  */
 const findByUsername = async (username) => {
   const [user] = await promisePool.execute(
-    'SELECT * FROM users WHERE username = ?',
+    'SELECT * FROM User WHERE username = ?',
     [username]
   );
   console.log(user);
@@ -41,7 +41,7 @@ const findByUsername = async (username) => {
 const createUser = async (newUser) => {
   try {
     const [result] = await promisePool.execute(
-      'INSERT INTO users (email, username, password, role) VALUES (?, ?, ?, ?)',
+      'INSERT INTO User (email, username, password, role) VALUES (?, ?, ?, ?)',
       [newUser.email, newUser.username, newUser.password, 3]
     );
 
