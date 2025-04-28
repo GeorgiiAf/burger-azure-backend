@@ -4,9 +4,9 @@ export async function login(req, res) {
   try {
     const {email, password} = req.body;
 
-    await AuthService.login(email, password);
+    const data = await AuthService.login(email, password);
 
-    res.status(200);
+    res.json(data);
   } catch (e) {
     res.status(400).json({message: 'Login failed', Error: e});
   }

@@ -21,7 +21,11 @@ export class AuthService {
     const isMatch = await comparePassword(password, user.password);
     if (!isMatch) throw new Error('Invalid credentials');
 
-    const accessToken = generateTokens({id: user.id, email: user.email});
+    const accessToken = generateTokens({
+      id: user.id,
+      email: user.email,
+      role: user.role,
+    });
 
     const userData = {
       id: user.id,

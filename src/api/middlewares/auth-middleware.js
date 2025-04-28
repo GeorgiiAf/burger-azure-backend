@@ -2,7 +2,25 @@ import jwt from 'jsonwebtoken';
 import Joi from 'joi';
 import {config} from '../../config/jwt.js';
 
-export const authenticateToken = (req, res, next) => {
+export const authToken = (req, res, next) => {
+  const authHeader = req.headers['authorization'];
+  const token = authHeader && authHeader.split(' ')[1];
+
+  if (!token) return res.sendStatus(401);
+
+  jwt.verify(token, config.JWT_SECRET, (err, user) => {
+    console.log('verification...');
+    if (err) {
+      console.error('JWT Verification Error:', err);
+      return res.sendStatus(403);
+    }
+    console.log('user -> ', user);
+    req.user = user;
+    next();
+  });
+};
+
+export const authAdminToken = (req, res, next) => {
   const authHeader = req.headers['authorization'];
   const token = authHeader && authHeader.split(' ')[1];
 
@@ -10,8 +28,13 @@ export const authenticateToken = (req, res, next) => {
 
   jwt.verify(token, config.JWT_SECRET, (err, user) => {
     if (err) return res.sendStatus(403);
-    req.user = user;
-    next();
+    if (user.role <= 2) {
+      res.status(200);
+      req.user = user;
+      next();
+    } else {
+      res.status(401);
+    }
   });
 };
 
