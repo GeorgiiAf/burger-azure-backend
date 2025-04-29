@@ -19,15 +19,6 @@ const createOrder = async (user_id, items, price, status) => {
       productPrices.set(item.product_id, product[0].price);
     }
 
-    // 2. Validate the provided price
-    const calculatedTotal = items.reduce((sum, item) => {
-      return sum + productPrices.get(item.product_id) * item.quantity;
-    }, 0);
-
-    if (calculatedTotal !== price) {
-      throw new Error('Provided price does not match calculated total');
-    }
-
     // 3. Create reservation
     const [reservationResult] = await connection.execute(
       'INSERT INTO Reservations (user_id, status, price, timestamp) VALUES (?, ?, ?, ?)',
