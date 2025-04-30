@@ -1,7 +1,9 @@
 import promisePool from '../../utils/database.js';
 
 const listAllProducts = async () => {
-  const [products] = await promisePool.execute('SELECT * FROM Product');
+  const [products] = await promisePool.execute(
+    'SELECT * FROM Product WHERE is_deleted = FALSE'
+  );
 
   for (const product of products) {
     if (!product.ID) {
@@ -33,7 +35,10 @@ const insertProduct = async ({name, price, description, category}) => {
 
 const removeProductById = async (id) => {
   const [result] = await promisePool.execute(
-    'DELETE FROM Product WHERE id = ?',
+    `UPDATE Product 
+     SET is_deleted = TRUE, 
+         deleted_at = CURRENT_TIMESTAMP 
+     WHERE ID = ?`,
     [id]
   );
   return result;
