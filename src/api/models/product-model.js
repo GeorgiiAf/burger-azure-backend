@@ -65,18 +65,25 @@ const getProductByType = async (type) => {
 };
 
 const updateProductById = async (id, updateData) => {
-  const fields = [];
+  const allowedFields = ['name', 'price', 'description'];
+
+  const setClauses = [];
   const values = [];
 
-  // Build dynamic query based on provided fields
-  for (const [key, value] of Object.entries(updateData)) {
-    fields.push(`${key} = ?`);
-    values.push(value);
+  Object.entries(updateData).forEach(([key, value]) => {
+    if (allowedFields.includes(key)) {
+      setClauses.push(`${key} = ?`);
+      values.push(value);
+    }
+  });
+
+  if (setClauses.length === 0) {
+    throw new Error('No valid fields to update');
   }
 
+  const query = `UPDATE Product SET ${setClauses.join(', ')} WHERE id = ?`;
   values.push(id);
 
-  const query = `UPDATE Product SET ${fields.join(', ')} WHERE id = ?`;
   const [result] = await promisePool.execute(query, values);
   return result;
 };

@@ -1,13 +1,19 @@
 import express from 'express';
 import {authAdminToken} from '../middlewares/auth-middleware.js';
-import {deleteProduct} from '../controllers/product-controller.js';
+import {
+  deleteProduct,
+  updateProduct,
+} from '../controllers/product-controller.js';
 
 const adminRouter = express.Router();
 
 adminRouter.get('/', authAdminToken, (req, res) => {
-  res.json({message: 'Valid', user: req.user});
+  res.json({user: req.user});
 });
 
-adminRouter.delete('/products/:id', authAdminToken, deleteProduct);
+adminRouter
+  .route('/products/:id')
+  .delete(authAdminToken, deleteProduct)
+  .put(authAdminToken, updateProduct);
 
 export default adminRouter;

@@ -14,7 +14,6 @@ export const authToken = (req, res, next) => {
       console.error('JWT Verification Error:', err);
       return res.sendStatus(403);
     }
-    console.log('user -> ', user);
     req.user = user;
     next();
   });
@@ -23,7 +22,7 @@ export const authToken = (req, res, next) => {
 export const authAdminToken = (req, res, next) => {
   const authHeader = req.headers['authorization'];
   const token = authHeader && authHeader.split(' ')[1];
-
+  console.log(req.body);
   if (!token) return res.sendStatus(401);
 
   jwt.verify(token, config.JWT_SECRET, (err, user) => {
