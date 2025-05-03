@@ -49,10 +49,7 @@ const removeProductById = async (id) => {
     );
 
     const [result] = await connection.execute(
-      `UPDATE Product
-       SET is_deleted = TRUE,
-           deleted_at = CURRENT_TIMESTAMP
-       WHERE ID = ?`,
+      'DELETE FROM Product WHERE ID = ?',
       [id]
     );
 
