@@ -54,12 +54,12 @@ const ProductByType = async (req, res) => {
 const addProduct = async (req, res) => {
   try {
     console.log('addProduct called with body:', req.body);
-    const {name, price, description, category} = req.body;
-    if (!name || !price || !description || !category) {
+    const {name, name_en, price, description, description_en, category} = req.body;
+    if (!name || !name_en || !price || !category) {
       console.log('Validation failed: Missing fields');
       return res.status(400).json({message: 'All fields are required'});
     }
-    const result = await insertProduct({name, price, description, category});
+    const result = await insertProduct({name, name_en, price, description, description_en, category});
     console.log('Product added successfully with ID:', result.insertId);
     res.status(201).json({
       message: 'Product added successfully',

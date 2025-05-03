@@ -25,10 +25,10 @@ const listAllProducts = async () => {
   return products;
 };
 
-const insertProduct = async ({name, price, description, category}) => {
+const insertProduct = async ({name, name_en, price, description, description_en, category}) => {
   const [result] = await promisePool.execute(
-    'INSERT INTO Product (name, price, description, category) VALUES (?, ?, ?, ?)',
-    [name, price, description, category]
+    'INSERT INTO Product (name, price, description, category, name_en, description_en) VALUES (?, ?, ?, ?, ?, ?)',
+    [name, price, description, category, name_en, description_en]
   );
   return result;
 };
