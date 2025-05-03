@@ -34,14 +34,37 @@ const insertProduct = async ({name, price, description, category}) => {
 };
 
 const removeProductById = async (id) => {
-  const [result] = await promisePool.execute(
-    `UPDATE Product 
-     SET is_deleted = TRUE, 
-         deleted_at = CURRENT_TIMESTAMP 
-     WHERE ID = ?`,
-    [id]
-  );
-  return result;
+  const connection = await promisePool.getConnection();
+  try {
+    await connection.beginTransaction();
+
+    await connection.execute(
+      'DELETE FROM ProductAllergy WHERE product_id = ?',
+      [id]
+    );
+
+    await connection.execute(
+      'DELETE FROM ReservationProducts WHERE product_id = ?',
+      [id]
+    );
+
+    const [result] = await connection.execute(
+      `UPDATE Product
+       SET is_deleted = TRUE,
+           deleted_at = CURRENT_TIMESTAMP
+       WHERE ID = ?`,
+      [id]
+    );
+
+    await connection.commit();
+    return result;
+  } catch (error) {
+    await connection.rollback();
+    console.error('Error deleting product and related data:', error);
+    throw error;
+  } finally {
+    connection.release();
+  }
 };
 
 const getProductById = async (id) => {
