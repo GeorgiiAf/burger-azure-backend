@@ -22,13 +22,13 @@ export class AuthService {
     if (!isMatch) throw new Error('Invalid credentials');
 
     const accessToken = generateTokens({
-      id: user.id,
+      id: user.ID,
       email: user.email,
       role: user.role,
     });
 
     const userData = {
-      id: user.id,
+      id: user.ID,
       email: user.email,
       name: user.name,
       role: user.role,
