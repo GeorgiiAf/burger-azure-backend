@@ -1,6 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import api from './api/index.js';
+import uploadRoutes from './api/routes/upload.js';
 
 const app = express();
 
@@ -21,12 +22,16 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use('/public', express.static('public'));
-
 app.get('/', (req, res) => {
   res.send('Welcome to my REST API');
 });
 
+
+app.use('/public', express.static('public'));
+
+
+app.use('/api/v1/upload', uploadRoutes);
 app.use('/api/v1', api);
+
 
 export default app;

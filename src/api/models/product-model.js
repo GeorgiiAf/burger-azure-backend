@@ -80,7 +80,7 @@ const getProductById = async (id) => {
   if (product.length === 0) return null;
 
   const allergies = await getAllergiesByProductId(id);
-  return {...product[0], allergies};
+  return { ...product[0], allergies };
 };
 
 const getProductByType = async (type) => {
@@ -218,6 +218,35 @@ const getAllergiesByProductId = async (productId) => {
   }
 };
 
+const updateProductImage = async (productId, imageUrl) => {
+  const [result] = await promisePool.execute(
+    'UPDATE Product SET image_url = ? WHERE id = ?',
+    [imageUrl, productId]
+  );
+  return result;
+};
+
+const deleteProductImage = async (productId) => {
+  const [product] = await promisePool.execute(
+    'SELECT image FROM Product WHERE id = ?',
+    [productId]
+  );
+
+  if (product.length === 0 || !product[0].image_url) {
+    return null;
+  }
+
+  const [result] = await promisePool.execute(
+    'UPDATE Product SET image = NULL WHERE id = ?',
+    [productId]
+  );
+
+  return product[0].image_url;
+};
+
+
+
+
 export {
   listAllProducts,
   insertProduct,
@@ -231,4 +260,6 @@ export {
   createAllergy,
   getAllAllergies,
   getAllergyByName,
+  deleteProductImage,
+  updateProductImage,
 };
