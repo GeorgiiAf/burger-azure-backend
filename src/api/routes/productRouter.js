@@ -5,6 +5,7 @@ import {
   ProductByType,
   addProduct,
   updateProduct,
+  deleteProduct,
   addProductAllergy,
   removeProductAllergy,
   getProductAllergies,
@@ -29,6 +30,6 @@ router.route('/').get(getAllProducts).post(addProduct);
 router.get('/type/:type', ProductByType);
 
 // Route for getting a single product, deleting a product and updating a product
-router.route('/:id').get(getProduct).put(updateProduct);
+router.route('/:id').get(getProduct).put(updateProduct).delete(deleteProduct);
 
 export default router;
