@@ -8,4 +8,10 @@ const addReview = async (reservationId, opinion, stars) => {
   return result;
 };
 
-export { addReview };
+const getAllReviews = async () => {
+  const [rows] = await promisePool.execute('SELECT * FROM Review');
+  return rows;
+};
+
+export { addReview, getAllReviews };
+
