@@ -2,23 +2,19 @@ import promisePool from '../../utils/database.js';
 
 const listAllProducts = async () => {
   const [products] = await promisePool.execute(
-    'SELECT * FROM Product WHERE is_deleted = FALSE'
+    `SELECT 
+      p.*,
+      CONCAT('${process.env.BASE_URL || 'http://localhost:3000'}', p.image) as image
+     FROM Product p 
+     WHERE is_deleted = FALSE`
   );
 
   for (const product of products) {
-    if (!product.ID) {
-      product.allergies = []; // Assign an empty array for allergies
-      continue;
-    }
-
     try {
-      const allergies = await getAllergiesByProductId(product.ID);
-      product.allergies = allergies;
+      product.allergies = await getAllergiesByProductId(product.ID);
     } catch (error) {
-      console.error(
-        `Error fetching allergies for product ID ${product.ID}:`,
-        error
-      );
+      console.error(`Error fetching allergies for product ${product.ID}:`, error);
+      product.allergies = [];
     }
   }
 
@@ -72,15 +68,19 @@ const removeProductById = async (id) => {
 };
 
 const getProductById = async (id) => {
-  const [product] = await promisePool.execute(
-    'SELECT * FROM Product WHERE id = ?',
+  const [[product]] = await promisePool.execute(
+    `SELECT 
+      p.*,
+      CONCAT('${process.env.BASE_URL || 'http://localhost:3000'}', p.image) as image
+     FROM Product p 
+     WHERE id = ?`,
     [id]
   );
 
-  if (product.length === 0) return null;
+  if (!product) return null;
 
   const allergies = await getAllergiesByProductId(id);
-  return { ...product[0], allergies };
+  return { ...product, allergies };
 };
 
 const getProductByType = async (type) => {
@@ -218,32 +218,41 @@ const getAllergiesByProductId = async (productId) => {
   }
 };
 
-const updateProductImage = async (productId, imageUrl) => {
+const updateProductImage = async (productId, image) => {
   const [result] = await promisePool.execute(
-    'UPDATE Product SET image_url = ? WHERE id = ?',
-    [imageUrl, productId]
+    'UPDATE Product SET image = ? WHERE id = ?',
+    [image, productId]
   );
   return result;
 };
 
 const deleteProductImage = async (productId) => {
-  const [product] = await promisePool.execute(
-    'SELECT image FROM Product WHERE id = ?',
-    [productId]
-  );
+  const connection = await promisePool.getConnection();
+  try {
+    await connection.beginTransaction();
 
-  if (product.length === 0 || !product[0].image_url) {
-    return null;
+    const [[product]] = await connection.execute(
+      'SELECT image FROM Product WHERE id = ? FOR UPDATE',
+      [productId]
+    );
+
+    if (!product) throw new Error('Product not found');
+    if (!product.image) return null;
+
+    await connection.execute(
+      'UPDATE Product SET image = NULL WHERE id = ?',
+      [productId]
+    );
+
+    await connection.commit();
+    return product.image;
+  } catch (error) {
+    await connection.rollback();
+    throw error;
+  } finally {
+    connection.release();
   }
-
-  const [result] = await promisePool.execute(
-    'UPDATE Product SET image = NULL WHERE id = ?',
-    [productId]
-  );
-
-  return product[0].image_url;
 };
-
 
 
 
@@ -260,6 +269,6 @@ export {
   createAllergy,
   getAllAllergies,
   getAllergyByName,
-  deleteProductImage,
   updateProductImage,
+  deleteProductImage,
 };

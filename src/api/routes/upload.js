@@ -1,68 +1,93 @@
-// api/routes/upload.js
 import express from 'express';
 import multer from 'multer';
 import sharp from 'sharp';
 import fs from 'fs';
 import path from 'path';
+import { updateProductImage, deleteProductImage } from '../models/product-model.js';
 
 const router = express.Router();
-
-// Настройка multer для загрузки файлов
 const upload = multer({ dest: 'temp/' });
 
-// Маршрут для загрузки изображения
 router.post('/:id', upload.single('image'), async (req, res) => {
     try {
-        // Проверяем, есть ли файл
         if (!req.file) {
             return res.status(400).json({ error: 'Файл не загружен' });
         }
+        const productId = req.params.id;
+        const outputDir = 'public/images/products';
+        const outputFileName = `product_${productId}_${Date.now()}.webp`;
+        const outputFile = path.join(outputDir, outputFileName);
 
-        // ID продукта из параметров URL
-        const id = req.params.id;
-
-        // Пути к файлам
-        const inputFile = req.file.path;
-        const outputDir = 'public/images';
-        const outputFile = path.join(outputDir, `${id}.webp`);
-
-        // Создаем директорию, если её нет
         if (!fs.existsSync(outputDir)) {
             fs.mkdirSync(outputDir, { recursive: true });
         }
 
-        // Обрабатываем изображение с помощью sharp
-        await sharp(inputFile)
+        await sharp(req.file.path)
             .webp({ quality: 80 })
             .toFile(outputFile);
 
-        // Удаляем временный файл
-        fs.unlinkSync(inputFile);
+        fs.unlinkSync(req.file.path);
 
-        // Успешный ответ
+        const image = `/images/products/${outputFileName}`;
+        await updateProductImage(productId, image);
+
         res.json({
             success: true,
-            message: 'Изображение успешно загружено',
-            url: `/public/images/${id}.webp`
+            image: `${process.env.BASE_URL || 'http://localhost:3000'}${image}`
         });
-
     } catch (error) {
-        console.error('Ошибка при загрузке:', error);
-        res.status(500).json({ error: 'Ошибка при обработке изображения' });
+        console.error('Ошибка загрузки:', error);
+        res.status(500).json({ error: 'Error ' });
     }
 });
 
-
-
-
 router.get('/check/:id', (req, res) => {
-    const imagePath = path.join('public/images', `${req.params.id}.webp`);
-    const exists = fs.existsSync(imagePath);
+    try {
+        const productId = req.params.id;
+        const imageDir = 'public/images/products';
+        const files = fs.readdirSync(imageDir);
 
-    res.json({
-        exists,
-        url: exists ? `/public/images/${req.params.id}.webp` : null
-    });
+        const productImages = files.filter(file =>
+            file.startsWith(`product_${productId}_`)
+        );
+
+        res.json({
+            exists: productImages.length > 0,
+            images: productImages.map(img => ({
+                url: `/images/products/${img}`,
+                fullUrl: `${process.env.BASE_URL || 'http://localhost:3000'}/images/products/${img}`
+            }))
+        });
+    } catch (error) {
+        res.status(500).json({
+            error: 'Error checking images',
+            details: error.message
+        });
+    }
+});
+
+router.delete('/:id', async (req, res) => {
+    try {
+        const productId = req.params.id;
+        const image = await deleteProductImage(productId);
+
+        if (image) {
+            const fullPath = path.join('public', image);
+            if (fs.existsSync(fullPath)) {
+                fs.unlinkSync(fullPath);
+            }
+        }
+
+        res.json({
+            success: true,
+            message: 'The image has been deleted successfully',
+        });
+    } catch (error) {
+        res.status(500).json({
+            error: 'Error deleting image',
+            details: error.message
+        });
+    }
 });
 
 export default router;
