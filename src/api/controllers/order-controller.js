@@ -2,6 +2,7 @@ import {
   createOrder,
   getOrderById,
   getAllOrdersFromDB,
+  getAllReservationProducts
 } from '../models/order-model.js';
 
 const createNewOrder = async (req, res) => {
@@ -52,6 +53,16 @@ const getOrder = async (req, res) => {
   }
 };
 
+const getAllReservationProductsController = async (req, res) => {
+  try {
+    const reservationProducts = await getAllReservationProducts();
+    res.json(reservationProducts);
+  } catch (error) {
+    console.error('Error fetching reservation products:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+};
+
 const getAllOrders = async (req, res) => {
   try {
     const orders = await getAllOrdersFromDB();
@@ -62,4 +73,4 @@ const getAllOrders = async (req, res) => {
   }
 };
 
-export {createNewOrder, getOrder, getAllOrders};
+export {createNewOrder, getOrder, getAllOrders, getAllReservationProductsController};

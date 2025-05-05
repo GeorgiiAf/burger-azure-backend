@@ -48,6 +48,11 @@ const createOrder = async (user_id, items, price, status) => {
   }
 };
 
+const getAllReservationProducts = async () => {
+  const [rows] = await promisePool.execute('SELECT * FROM ReservationProducts');
+  return rows;
+};
+
 const getOrderById = async (id) => {
   // Get reservation details
   const [reservation] = await promisePool.execute(
@@ -93,4 +98,4 @@ const getAllOrdersFromDB = async () => {
   return reservations;
 };
 
-export {createOrder, getOrderById, getAllOrdersFromDB};
+export {createOrder, getOrderById, getAllOrdersFromDB, getAllReservationProducts};
