@@ -1,4 +1,14 @@
-import { addReview } from '../models/review-model.js';
+import { addReview, getAllReviews } from '../models/review-model.js';
+
+const getAllReviewsController = async (req, res) => {
+  try {
+    const reviews = await getAllReviews();
+    res.json(reviews);
+  } catch (error) {
+    console.error('Error fetching reviews:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+};
 
 const createReview = async (req, res) => {
   try {
@@ -24,4 +34,4 @@ const createReview = async (req, res) => {
   }
 };
 
-export { createReview };
+export { createReview, getAllReviewsController };
