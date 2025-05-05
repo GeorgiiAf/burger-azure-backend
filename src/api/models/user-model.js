@@ -34,6 +34,17 @@ const findByUsername = async (username) => {
 };
 
 /**
+ * Gets all users
+ * @returns {Promise<user[]>}
+ */
+const getAllUsers = async () => {
+  const [users] = await promisePool.execute(
+    'SELECT * FROM User'
+  );
+  return users;
+};
+
+/**
  * Creates a new user
  * @param {newUser} newUser
  * @returns {Promise<object|null>}
@@ -52,4 +63,4 @@ const createUser = async (newUser) => {
   }
 };
 
-export {findByEmail, findByUsername, createUser};
+export {findByEmail, findByUsername, createUser, getAllUsers};
