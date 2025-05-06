@@ -10,13 +10,12 @@ app.use((req, res, next) => {
   next();
 });
 
-
 if (process.env.NODE_ENV === 'production') {
   const sslOptions = {
-    key: fs.readFileSync('/etc/pki/tls/private/ca.key'),
-    cert: fs.readFileSync('/etc/pki/tls/certs/ca.crt')
+    key: fs.readFileSync('/home/vladi/web-project-backend/ssl/ca.key'),
+    cert: fs.readFileSync('/home/vladi/web-project-backend/ssl/ca.crt'),
   };
-  
+
   https.createServer(sslOptions, app).listen(port, hostname, () => {
     console.log(`HTTPS server running at https://${hostname}:${port}/`);
   });
