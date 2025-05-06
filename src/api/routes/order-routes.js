@@ -3,7 +3,8 @@ import {
   createNewOrder,
   getOrder,
   getAllOrders,
-  getAllReservationProductsController
+  getAllReservationProductsController,
+  updateOrderStatus
 } from '../controllers/order-controller.js';
 
 const router = express.Router();
@@ -12,7 +13,9 @@ const router = express.Router();
 router.route('/orders').post(createNewOrder).get(getAllOrders);
 
 // Route for fetching a specific order by ID
-router.get('/orders/:id', getOrder);
+router.route('/orders/:id')
+  .get(getOrder)
+  .patch(updateOrderStatus);
 
 router.get('/reservation-products', getAllReservationProductsController);
 
