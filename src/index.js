@@ -1,3 +1,5 @@
+import https from 'https';
+import fs from 'fs';
 import app from './app.js';
 
 const hostname = '127.0.0.1';
@@ -8,6 +10,18 @@ app.use((req, res, next) => {
   next();
 });
 
-app.listen(port, hostname, () => {
-  console.log(`Server running at http://${hostname}:${port}/`);
-});
+
+if (process.env.NODE_ENV === 'production') {
+  const sslOptions = {
+    key: fs.readFileSync('/etc/pki/tls/private/ca.key'),
+    cert: fs.readFileSync('/etc/pki/tls/certs/ca.crt')
+  };
+  
+  https.createServer(sslOptions, app).listen(port, hostname, () => {
+    console.log(`HTTPS server running at https://${hostname}:${port}/`);
+  });
+} else {
+  app.listen(port, hostname, () => {
+    console.log(`HTTP server running at http://${hostname}:${port}/`);
+  });
+}
