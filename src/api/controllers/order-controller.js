@@ -2,7 +2,8 @@ import {
   createOrder,
   getOrderById,
   getAllOrdersFromDB,
-  getAllReservationProducts
+  getAllReservationProducts,
+  updateOrderStatusInDB
 } from '../models/order-model.js';
 
 const createNewOrder = async (req, res) => {
@@ -35,6 +36,28 @@ const createNewOrder = async (req, res) => {
       return res.status(404).json({ message: error.message });
     }
 
+    res.status(500).json({ message: 'Internal server error' });
+  }
+};
+
+const updateOrderStatus = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { status } = req.body;
+
+    if (!status) {
+      return res.status(400).json({ message: 'Status is required' });
+    }
+
+    const updated = await updateOrderStatusInDB(id, status);
+
+    if (!updated) {
+      return res.status(404).json({ message: 'Order not found' });
+    }
+
+    res.json({ message: 'Order status updated successfully' });
+  } catch (error) {
+    console.error('Error updating order status:', error);
     res.status(500).json({ message: 'Internal server error' });
   }
 };
@@ -73,4 +96,4 @@ const getAllOrders = async (req, res) => {
   }
 };
 
-export {createNewOrder, getOrder, getAllOrders, getAllReservationProductsController};
+export {createNewOrder, getOrder, getAllOrders, getAllReservationProductsController, updateOrderStatus};

@@ -48,6 +48,14 @@ const createOrder = async (user_id, items, price, status) => {
   }
 };
 
+const updateOrderStatusInDB = async (id, status) => {
+  const [result] = await promisePool.execute(
+    'UPDATE Reservations SET status = ? WHERE ID = ?',
+    [status, id]
+  );
+  return result.affectedRows > 0;
+};
+
 const getAllReservationProducts = async () => {
   const [rows] = await promisePool.execute('SELECT * FROM ReservationProducts');
   return rows;
@@ -98,4 +106,4 @@ const getAllOrdersFromDB = async () => {
   return reservations;
 };
 
-export {createOrder, getOrderById, getAllOrdersFromDB, getAllReservationProducts};
+export {createOrder, getOrderById, getAllOrdersFromDB, getAllReservationProducts, updateOrderStatusInDB};
