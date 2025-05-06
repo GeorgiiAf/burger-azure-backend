@@ -38,9 +38,7 @@ const findByUsername = async (username) => {
  * @returns {Promise<user[]>}
  */
 const getAllUsers = async () => {
-  const [users] = await promisePool.execute(
-    'SELECT * FROM User'
-  );
+  const [users] = await promisePool.execute('SELECT * FROM User');
   return users;
 };
 
@@ -63,4 +61,55 @@ const createUser = async (newUser) => {
   }
 };
 
-export {findByEmail, findByUsername, createUser, getAllUsers};
+const updateUser = async (data) => {
+  try {
+    const setClauses = [];
+    const params = [];
+
+    if (data.username !== null) {
+      setClauses.push('username = ?');
+      params.push(data.username);
+    }
+    if (data.email !== null) {
+      setClauses.push('email = ?');
+      params.push(data.email);
+    }
+    if (data.new_password !== null) {
+      setClauses.push('password = ?');
+      params.push(data.new_password);
+    }
+    if (data.first_name !== null) {
+      setClauses.push('first_name = ?');
+      params.push(data.first_name);
+    }
+    if (data.last_name !== null) {
+      setClauses.push('last_name = ?');
+      params.push(data.last_name);
+    }
+    if (data.address !== null) {
+      setClauses.push('address = ?');
+      params.push(data.address);
+    }
+    if (data.phone !== null) {
+      setClauses.push('phone = ?');
+      params.push(data.phone);
+    }
+
+    if (setClauses.length === 0) {
+      return {affectedRows: 0};
+    }
+
+    params.push(data.id);
+
+    const query = `UPDATE User 
+                   SET ${setClauses.join(', ')}
+                   WHERE ID = ?`;
+
+    const [result] = await promisePool.execute(query, params);
+    return result;
+  } catch (e) {
+    throw new Error(`Database error -> ${e}`);
+  }
+};
+
+export {findByEmail, findByUsername, createUser, getAllUsers, updateUser};

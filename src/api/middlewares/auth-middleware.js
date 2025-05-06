@@ -21,7 +21,7 @@ export const authToken = (req, res, next) => {
 export const authAdminToken = (req, res, next) => {
   const authHeader = req.headers['authorization'];
   const token = authHeader && authHeader.split(' ')[1];
-  console.log(req.body);
+  console.log('admin ->', req.body);
   if (!token) return res.sendStatus(401);
 
   jwt.verify(token, config.JWT_SECRET, (err, user) => {
@@ -37,7 +37,6 @@ export const authAdminToken = (req, res, next) => {
 };
 
 export const validateRegister = (req, res, next) => {
-  console.log(req.body);
   const schema = Joi.object({
     email: Joi.string().email().required(),
     password: Joi.string().min(8).required(),

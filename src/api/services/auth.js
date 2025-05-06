@@ -25,6 +25,11 @@ export class AuthService {
       id: user.ID,
       email: user.email,
       role: user.role,
+      username: user.username,
+      first_name: user.first_name,
+      last_name: user.last_name,
+      address: user.address,
+      phone: user.phone,
     });
 
     const userData = {
@@ -59,8 +64,6 @@ export class AuthService {
       username: username,
       password: hashedPassword,
     };
-
-    console.log('newUser -> ', newUser);
 
     const res = await createUser(newUser);
 

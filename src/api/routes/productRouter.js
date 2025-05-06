@@ -3,9 +3,6 @@ import {
   getAllProducts,
   getProduct,
   ProductByType,
-  addProduct,
-  updateProduct,
-  deleteProduct,
   addProductAllergy,
   removeProductAllergy,
   getProductAllergies,
@@ -23,13 +20,13 @@ router
   .post(addProductAllergy)
   .delete(removeProductAllergy);
 
-// Route for getting all products and adding a new product
-router.route('/').get(getAllProducts).post(addProduct);
+// Route for getting all products
+router.route('/').get(getAllProducts);
 
 // Route for getting products by type
 router.get('/type/:type', ProductByType);
 
-// Route for getting a single product, deleting a product and updating a product
-router.route('/:id').get(getProduct).put(updateProduct).delete(deleteProduct);
+// Route for getting a single product
+router.route('/:id').get(getProduct);
 
 export default router;

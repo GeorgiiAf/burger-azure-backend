@@ -57,9 +57,11 @@ const addProduct = async (req, res) => {
     const {name, name_fi, price, description, description_fi, category} =
       req.body;
     if (!name || !name_fi || !price || !category) {
-      console.log('Validation failed: Missing fields');
-      return res.status(400).json({message: 'All fields are required'});
+      return res
+        .status(400)
+        .json({message: 'name, name_fi, price, category are required'});
     }
+
     const result = await insertProduct({
       name,
       name_fi,
