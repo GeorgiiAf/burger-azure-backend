@@ -11,7 +11,7 @@ const upload = multer({ dest: 'temp/' });
 router.post('/:id', upload.single('image'), async (req, res) => {
     try {
         if (!req.file) {
-            return res.status(400).json({ error: 'Файл не загружен' });
+            return res.status(400).json({ error: 'file is not downloaded ' });
         }
         const productId = req.params.id;
         const outputDir = 'public/images/products';
