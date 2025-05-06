@@ -15,7 +15,6 @@ const findByEmail = async (email) => {
     'SELECT * FROM User WHERE email = ?',
     [email]
   );
-  console.log(user);
   return user[0];
 };
 
@@ -29,7 +28,6 @@ const findByUsername = async (username) => {
     'SELECT * FROM User WHERE username = ?',
     [username]
   );
-  console.log(user);
   return user[0];
 };
 
@@ -56,7 +54,6 @@ const createUser = async (newUser) => {
 
     return result;
   } catch (e) {
-    console.log(e.message);
     throw new Error(`Database error -> ${e}`);
   }
 };

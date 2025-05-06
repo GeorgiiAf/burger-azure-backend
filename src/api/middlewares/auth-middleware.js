@@ -21,7 +21,6 @@ export const authToken = (req, res, next) => {
 export const authAdminToken = (req, res, next) => {
   const authHeader = req.headers['authorization'];
   const token = authHeader && authHeader.split(' ')[1];
-  console.log('admin ->', req.body);
   if (!token) return res.sendStatus(401);
 
   jwt.verify(token, config.JWT_SECRET, (err, user) => {

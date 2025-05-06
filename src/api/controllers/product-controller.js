@@ -53,7 +53,6 @@ const ProductByType = async (req, res) => {
 
 const addProduct = async (req, res) => {
   try {
-    console.log('addProduct called with body:', req.body);
     const {name, name_fi, price, description, description_fi, category} =
       req.body;
     if (!name || !name_fi || !price || !category) {
@@ -70,7 +69,6 @@ const addProduct = async (req, res) => {
       description_fi,
       category,
     });
-    console.log('Product added successfully with ID:', result.insertId);
     res.status(201).json({
       message: 'Product added successfully',
       productId: result.insertId,
@@ -97,7 +95,6 @@ const deleteProduct = async (req, res) => {
 
 const updateProduct = async (req, res) => {
   try {
-    console.log('updateProduct called with body:', req.body);
     const {id} = req.params;
 
     // Remove any undefined or null values from the body
@@ -117,7 +114,6 @@ const updateProduct = async (req, res) => {
       return res.status(404).json({message: 'Product not found'});
     }
 
-    console.log('Product updated successfully with ID:', id);
     res.json({message: 'Product updated successfully'});
   } catch (error) {
     console.error('Error updating product:', error);
