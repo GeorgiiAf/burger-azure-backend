@@ -18,8 +18,10 @@ export async function register(req, res) {
 
     await AuthService.register(email, password, username);
 
-    res.status(200);
+    const data = await AuthService.login(email, password);
+
+    res.json(data);
   } catch (e) {
-    res.status(400).json({message: 'Registration failed', Error: e.message});
+    res.status(401).json({message: 'Registration failed', Error: e.message});
   }
 }

@@ -65,8 +65,10 @@ export class AuthService {
       password: hashedPassword,
     };
 
-    const res = await createUser(newUser);
+    await createUser(newUser);
 
-    return res;
+    const data = await this.login(email, password);
+
+    return {data};
   }
 }
