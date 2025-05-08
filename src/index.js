@@ -2,7 +2,6 @@ import https from 'https';
 import fs from 'fs';
 import app from './app.js';
 
-const hostname = '127.0.0.1';
 const port = 3000;
 
 app.use((req, res, next) => {
@@ -24,3 +23,4 @@ if (process.env.NODE_ENV === 'production') {
     console.log(`HTTP server running at http://${hostname}:${port}/`);
   });
 }
+
