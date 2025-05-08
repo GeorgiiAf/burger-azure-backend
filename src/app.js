@@ -10,14 +10,14 @@ app.use(
     origin: [
       '*',
       'http://localhost:5173',
-      'https://blue-river-07843aa03.6.azurestaticapps.net',
+      'https://jolly-dune-0efe07503.6.azurestaticapps.net',
     ],
     credentials: true,
   })
 );
 
 app.use(express.json());
-app.use(express.urlencoded({extended: true}));
+app.use(express.urlencoded({ extended: true }));
 
 app.use((req, res, next) => {
   req.url = req.url.toLowerCase();
